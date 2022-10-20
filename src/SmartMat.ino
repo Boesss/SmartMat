@@ -50,7 +50,7 @@ int showerLoop() {
 	if (showerstate == Shower::Off) {
 		// Checks if pressure is applied to the mat
 		// TODO - fix accidential activation
-		// TEST - fix words with time duration
+		// TEST - fixed accidential activation with time duration
 		if (sensor_p.read(500)) {
 			showerstate = Shower::Warming;
 			Serial.println("State: Warming");
