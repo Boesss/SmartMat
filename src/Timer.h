@@ -15,11 +15,19 @@ private:
 
 public:
 
+	// Timer constructer, start the timer
 	Timer();
 
+	// Start the timer / resets the timer when started
 	void start();
+	
+	// Stops the timer
 	void stop();
+
+	// Get the duration from start until stop
 	int getDuration() const;
+
+	// Get the duration from start unil now
 	int getDurationNow() const;
 };
 
