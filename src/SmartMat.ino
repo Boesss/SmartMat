@@ -12,7 +12,7 @@ constexpr uint8_t TEMPPIN = A1;
 constexpr uint8_t MOTORPIN = 3;
 
 // Constants
-constexpr int MINTEMPERATURE = 23;
+constexpr int MINTEMPERATURE = 25;
 constexpr int SHUTOFFDURATION = 15000; // In milliseconds
 
 // Constructors for all the classes
