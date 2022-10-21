@@ -37,7 +37,7 @@ public:
 
 	// Checks if there is change in temperature for a specfic rate of change in celcius over milliseconds
 	// True if outside of rate of change
-	bool checkChange(const unsigned milliseconds, const float changerate);
+	bool checkRiseTemp(const unsigned milliseconds, const float changerate);
 
 };
 

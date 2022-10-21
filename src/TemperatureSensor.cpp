@@ -18,21 +18,25 @@ float TemperatureSensor::readTemperature() {
 	return transferFunction(readResistance());
 }
 
-bool TemperatureSensor::checkChange(const unsigned milliseconds, const float changerate) {
-	if (timer.getDurationNow() > milliseconds) {
+bool TemperatureSensor::checkRiseTemp(const unsigned milliseconds, const float changerate) {
+	int count = 0;
+	float temperature = 0;
+	timer.start();
 
-		// Reset timer;
-		timer.start();
-
-		if (abs(readTemperature() - _oldTemperature) < changerate) {
-			_change = false;
+	while(1){
+		count++;
+		temperature += readTemperature();
+		if (timer.getDurationNow() > milliseconds) {
+			break;
 		}
-		else {
-			_change = true;
-		}
-
-		// Save old temperature
-		_oldTemperature = readTemperature();
 	}
-	return _change;
+
+	temperature /= count;
+
+	if ((temperature - _oldTemperature) > changerate) {
+		_oldTemperature = temperature;
+		return true;
+	}
+	_oldTemperature = temperature;
+	return false;
 }

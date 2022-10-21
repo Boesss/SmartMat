@@ -1,3 +1,4 @@
+#include "Vector.h"
 #include <Servo.h>
 
 #include "Logic.h"
@@ -11,7 +12,8 @@ constexpr uint8_t TEMPPIN = A1;
 constexpr uint8_t MOTORPIN = 3;
 
 // Constants
-constexpr int MINTEMPERATURE = 25;
+constexpr int MINTEMPERATURE = 23;
+constexpr int SHUTOFFDURATION = 15000; // In milliseconds
 
 // Constructors for all the classes
 PressureSensor sensor_p(1, PRESPIN);
@@ -39,6 +41,8 @@ void setup() {
 // ARDUINO LOOP
 void loop() {
 
+	//printTempDebug();
+
 	showerLoop();
 
 }
@@ -49,8 +53,6 @@ int showerLoop() {
 	// Shower off state
 	if (showerstate == Shower::Off) {
 		// Checks if pressure is applied to the mat
-		// TODO - fix accidential activation
-		// TEST - fixed accidential activation with time duration
 		if (sensor_p.read(500)) {
 			showerstate = Shower::Warming;
 			Serial.println("State: Warming");
@@ -61,8 +63,7 @@ int showerLoop() {
 	// Shower warming state
 	else if (showerstate == Shower::Warming) {
 		//Checks the change in temperature
-		// TODO - fix accidental false negatives
-		if (!sensor_t.checkChange(500, 0.5) && (sensor_t.readTemperature() > MINTEMPERATURE)) {
+		if (!sensor_t.checkRiseTemp(500, 0.2) && (sensor_t.readTemperature() > MINTEMPERATURE)) {
 			showerstate = Shower::On;
 			Serial.println("State: On");
 			closeShowerHead();
@@ -85,7 +86,7 @@ int showerLoop() {
 		}
 
 		// Set showerstate to off
-		if ((timer.getDurationNow() > 15000) && !sensor_p.read()) {
+		if ((timer.getDurationNow() > SHUTOFFDURATION) && !sensor_p.read()) {
 			showerstate = Shower::Off;
 			Serial.println("State: Off");
 		}
@@ -107,7 +108,7 @@ void printTempDebug() {
 	Serial.print("Temperature: ");
 	Serial.print(sensor_t.readTemperature()); // Temperature in celcius
 	Serial.print(", Temp Change: ");
-	Serial.println(sensor_t.checkChange(500, 0.5));
+	Serial.println(sensor_t.checkRiseTemp(500, 0.2));
 }
 
 void printDebug() {
