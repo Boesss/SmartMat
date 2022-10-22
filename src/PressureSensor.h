@@ -9,7 +9,7 @@
 	#include "WProgram.h"
 #endif
 
-#include "Timer.h"
+#include "Timer.h" 
 
 class PressureSensor {
 
@@ -18,14 +18,20 @@ private:
 	uint8_t _pin;
 	Timer timer;
 
+	float treshhold_resistance = 0;
+
+	static const unsigned _resistance = 10; // In kOhm
+
+	float readResistance();
+
 public:
 	// Constructor for a Pressure sensor
-	PressureSensor(uint8_t id, uint8_t pin);
-	
-	// Returns true if pressure is applied
+	PressureSensor(uint8_t id, uint8_t pin, float treshhold);
+
+	// Returns a boolean value depending on the resistance of the sensor
+	// Returns true for activation
 	bool read();
 
-	// Returns if pressure is measured over time in milliseconds
 	bool read(const unsigned milliseconds);
 
 };

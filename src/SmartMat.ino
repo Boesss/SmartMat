@@ -16,7 +16,7 @@ constexpr int MINTEMPERATURE = 25;
 constexpr int SHUTOFFDURATION = 15000; // In milliseconds
 
 // Constructors for all the classes
-PressureSensor sensor_p(1, PRESPIN);
+PressureSensor sensor_p(1, PRESPIN, 0.5); // Treshhold needs to be tested, now set to 0.5 kOhm
 TemperatureSensor sensor_t(1, TEMPPIN);
 Servo servo;
 Timer timer;
