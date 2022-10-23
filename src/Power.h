@@ -16,7 +16,7 @@ private:
 	uint8_t _pin;
 
 public:
-	// Set a digital pin for providing the power, cannot exceed more than 40mA.
+	// Set a digital pin for providing the power, cannot exceed 40mA.
 	// Turn the power to 5V for the length of the scope.
 	Power(uint8_t id, uint8_t pin);
 	~Power();

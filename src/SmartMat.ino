@@ -1,5 +1,3 @@
-#include "Power.h"
-#include "Vector.h"
 #include <Servo.h>
 
 #include "Logic.h"
