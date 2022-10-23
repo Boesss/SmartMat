@@ -10,6 +10,7 @@
 #endif
 
 #include "Timer.h" 
+#include "Power.h"
 
 class PressureSensor {
 

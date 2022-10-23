@@ -6,6 +6,7 @@ TemperatureSensor::TemperatureSensor(uint8_t id, uint8_t pin): _id(id), _pin(pin
 }
 
 float TemperatureSensor::readResistance() {
+	Power power(0, 7);
 	return float(_resistance * analogRead(_pin)) /
 	float(1023 - analogRead(_pin));
 }

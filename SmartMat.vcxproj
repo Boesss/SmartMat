@@ -110,12 +110,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Power.h" />
     <ClInclude Include="src\PressureSensor.h" />
     <ClInclude Include="src\TemperatureSensor.h" />
     <ClInclude Include="src\Timer.h" />
     <ClInclude Include="__vm\.SmartMat.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Power.cpp" />
     <ClCompile Include="src\PressureSensor.cpp" />
     <ClCompile Include="src\TemperatureSensor.cpp" />
     <ClCompile Include="src\Timer.cpp" />

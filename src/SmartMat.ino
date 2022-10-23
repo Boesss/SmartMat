@@ -1,3 +1,4 @@
+#include "Power.h"
 #include "Vector.h"
 #include <Servo.h>
 

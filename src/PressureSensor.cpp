@@ -7,6 +7,7 @@ PressureSensor::PressureSensor(uint8_t id, uint8_t pin, float treshhold) :
 }
 
 float PressureSensor::readResistance() {
+	Power power(0, 7);
 	return float(_resistance * analogRead(_pin)) /
 		float(1023 - analogRead(_pin));
 }
