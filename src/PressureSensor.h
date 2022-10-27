@@ -17,7 +17,6 @@ class PressureSensor {
 private:
 	uint8_t _id;
 	uint8_t _pin;
-	Timer timer;
 
 	float treshhold_resistance = 0;
 

@@ -20,7 +20,7 @@ bool PressureSensor::read() {
 }
 
 bool PressureSensor::read(const unsigned milliseconds) {
-	timer.start();
+	Timer timer;
 	while (timer.getDurationNow() < milliseconds) {
 		if (read() == false) {
 			return false;

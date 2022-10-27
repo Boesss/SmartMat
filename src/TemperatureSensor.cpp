@@ -1,6 +1,7 @@
 #include "TemperatureSensor.h"
 
-TemperatureSensor::TemperatureSensor(uint8_t id, uint8_t pin): _id(id), _pin(pin) {
+TemperatureSensor::TemperatureSensor(uint8_t id, uint8_t pin, float changerate) :
+	_id(id), _pin(pin), _changerate(changerate) {
 	pinMode(_pin, INPUT);
 	analogReference(DEFAULT);
 }
@@ -8,7 +9,7 @@ TemperatureSensor::TemperatureSensor(uint8_t id, uint8_t pin): _id(id), _pin(pin
 float TemperatureSensor::readResistance() {
 	Power power(0, 7);
 	return float(_resistance * analogRead(_pin)) /
-	float(1023 - analogRead(_pin));
+		float(1023 - analogRead(_pin));
 }
 
 float TemperatureSensor::transferFunction(const float& resistance) {
@@ -19,12 +20,19 @@ float TemperatureSensor::readTemperature() {
 	return transferFunction(readResistance());
 }
 
-bool TemperatureSensor::checkRiseTemp(const unsigned milliseconds, const float changerate) {
+float TemperatureSensor::readChangeTemp(const unsigned milliseconds) {
 	int count = 0;
 	float temperature = 0;
-	timer.start();
+	Timer timer;
 
-	while(1){
+	// Set _oldTemperature to temperature for first run
+	if (_oldTemperature == 0) {
+		_oldTemperature = readTemperature();
+	}
+
+	float oldTemperature = _oldTemperature;
+
+	while (1) {
 		count++;
 		temperature += readTemperature();
 		if (timer.getDurationNow() > milliseconds) {
@@ -34,10 +42,15 @@ bool TemperatureSensor::checkRiseTemp(const unsigned milliseconds, const float c
 
 	temperature /= count;
 
-	if ((temperature - _oldTemperature) > changerate) {
-		_oldTemperature = temperature;
+	_oldTemperature = temperature;
+
+	return temperature - oldTemperature;
+}
+
+bool TemperatureSensor::checkRiseTemp(const unsigned milliseconds) {
+
+	if (readChangeTemp(milliseconds) > _changerate) {
 		return true;
 	}
-	_oldTemperature = temperature;
 	return false;
 }
