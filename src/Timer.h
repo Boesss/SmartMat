@@ -4,9 +4,9 @@
 #define _TIMER_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
-	#include "arduino.h"
+#include "arduino.h"
 #else
-	#include "WProgram.h"
+#include "WProgram.h"
 #endif
 
 class Timer {
@@ -20,7 +20,7 @@ public:
 
 	// Start the timer / resets the timer when started
 	void start();
-	
+
 	// Stops the timer
 	void stop();
 
@@ -33,4 +33,3 @@ public:
 
 
 #endif
-

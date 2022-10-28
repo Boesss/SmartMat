@@ -12,7 +12,7 @@ void Timer::stop() {
 	_end = millis();
 }
 
-int Timer::getDuration() const{
+int Timer::getDuration() const {
 	return _end - _start;
 }
 

@@ -13,16 +13,15 @@ constexpr uint8_t TEMPPIN = A1;
 constexpr uint8_t MOTORPIN = 3;
 
 // Constants
-constexpr int SHUTOFFDURATION = 15000; // In milliseconds
+constexpr int SHUTOFFDURATION = 20000; // In milliseconds
 constexpr int SURROUNDTEMPDURATION = 60000; // Measure every 60 seconds
 
 // Constructors for all the classes
-PressureSensor sensor_p(1, PRESPIN, 0.05); 
+PressureSensor sensor_p(1, PRESPIN, 1); 
 TemperatureSensor sensor_t(1, TEMPPIN, 0.2); // Rate of change 0.2 celcius
 Servo servo;
-Timer timout;
+Timer timeout;
 Timer timetemp;
-Timer showeroff;
 
 // Shower States
 enum class Shower {
@@ -34,6 +33,7 @@ enum class Shower {
 //Global variables
 Shower showerstate = Shower::Off;
 float surroundtemp = sensor_t.readTemperature(); // Standard set to 21 degrees celcius
+bool timerstate = false;
 
 // ARDUINO SETUP
 void setup() {
@@ -76,7 +76,7 @@ int showerLoop() {
 		// Checks if pressure is applied to the mat
 		if (sensor_p.read(500)) {
 			showerstate = Shower::Warming;
-			timout.start();
+			timeout.start();
 			Serial.println("State: Warming");
 			openShowerHead();
 		}
@@ -93,9 +93,10 @@ int showerLoop() {
 		}
 
 		// Timout and go to on state
-		if ((timout.getDurationNow() > SHUTOFFDURATION) && sensor_t.readTemperature() < (surroundtemp + 1)) {
+		if ((timeout.getDurationNow() > SHUTOFFDURATION) && sensor_t.readTemperature() < (surroundtemp + 1)) {
 			showerstate = Shower::On;
 			Serial.println("State: On");
+			closeShowerHead();
 		}
 	}
 
@@ -105,15 +106,17 @@ int showerLoop() {
 		// Checks if pressure is applied to the mat
 		if (sensor_p.read(100)) {
 			openShowerHead();
-			timout.start();
+			timerstate = true;
+			timeout.start();
 		}
-		else if (timout.getDurationNow() > 1000) {
+		else if (timeout.getDurationNow() > 1000) {
 			closeShowerHead();
 		}
 
 		// Set showerstate to off
-		if ((timout.getDurationNow() > SHUTOFFDURATION) && !sensor_p.read()) {
+		if ((timeout.getDurationNow() > SHUTOFFDURATION) && !sensor_p.read() && timerstate) {
 			showerstate = Shower::Off;
+			timerstate = false;
 			Serial.println("State: Off");
 		}
 	}
