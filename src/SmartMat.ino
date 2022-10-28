@@ -5,7 +5,7 @@
 #include "PressureSensor.h"
 #include "Timer.h"
 
-#define DEBUG
+//#define DEBUG
 
 // IO Pins for the different classes
 constexpr uint8_t PRESPIN = A2;
@@ -14,12 +14,14 @@ constexpr uint8_t MOTORPIN = 3;
 
 // Constants
 constexpr int SHUTOFFDURATION = 15000; // In milliseconds
+constexpr int SURROUNDTEMPDURATION = 60000; // Measure every 60 seconds
 
 // Constructors for all the classes
 PressureSensor sensor_p(1, PRESPIN, 0.05); 
 TemperatureSensor sensor_t(1, TEMPPIN, 0.2); // Rate of change 0.2 celcius
 Servo servo;
 Timer timout;
+Timer timetemp;
 
 // Shower States
 enum class Shower {
@@ -31,7 +33,7 @@ enum class Shower {
 //Global variables
 Shower showerstate = Shower::Off;
 bool timerstate = false;
-float surroundtemp = 21; // Standard set to 21 degrees celcius
+float surroundtemp = sensor_t.readTemperature(); // Standard set to 21 degrees celcius
 
 // ARDUINO SETUP
 void setup() {
@@ -63,8 +65,13 @@ int showerLoop() {
 
 	// Shower off state
 	if (showerstate == Shower::Off) {
+
 		// Reads temperature to set the surrounding temperature
-		surroundtemp = sensor_t.readTemperature();
+		if (timetemp.getDurationNow() > SURROUNDTEMPDURATION) {
+			surroundtemp = sensor_t.readTemperature();
+			// Reset timer
+			timetemp.start();
+		}
 
 		// Checks if pressure is applied to the mat
 		if (sensor_p.read(500)) {
@@ -85,10 +92,10 @@ int showerLoop() {
 			closeShowerHead();
 		}
 
-		// Timout
-		if (timout.getDurationNow() > SHUTOFFDURATION) {
-			showerstate = Shower::Off;
-			Serial.println("State: Off");
+		// Timout and go to on state
+		if ((timout.getDurationNow() > SHUTOFFDURATION) && sensor_t.readTemperature() < (surroundtemp + 1)) {
+			showerstate = Shower::On;
+			Serial.println("State: On");
 		}
 	}
 
@@ -118,7 +125,7 @@ int showerLoop() {
 
 // Motor functions
 void openShowerHead() {
-	servo.write(93 + 22);
+	servo.write(93 + 25);
 }
 
 void closeShowerHead() {
