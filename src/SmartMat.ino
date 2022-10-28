@@ -22,6 +22,7 @@ TemperatureSensor sensor_t(1, TEMPPIN, 0.2); // Rate of change 0.2 celcius
 Servo servo;
 Timer timout;
 Timer timetemp;
+Timer showeroff;
 
 // Shower States
 enum class Shower {
@@ -32,7 +33,6 @@ enum class Shower {
 
 //Global variables
 Shower showerstate = Shower::Off;
-bool timerstate = false;
 float surroundtemp = sensor_t.readTemperature(); // Standard set to 21 degrees celcius
 
 // ARDUINO SETUP
@@ -105,14 +105,10 @@ int showerLoop() {
 		// Checks if pressure is applied to the mat
 		if (sensor_p.read(100)) {
 			openShowerHead();
-			timerstate = false;
+			timout.start();
 		}
-		else {
+		else if (timout.getDurationNow() > 1000) {
 			closeShowerHead();
-			if (!timerstate) {
-				timerstate = true;
-				timout.start();
-			}
 		}
 
 		// Set showerstate to off
