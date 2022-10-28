@@ -22,6 +22,8 @@ private:
 
 	static const unsigned _resistance = 10000; // In Ohm
 
+	float readResistance();
+
 public:
 	// Constructor for a Pressure sensor
 	PressureSensor(uint8_t id, uint8_t pin, float treshhold);
@@ -31,8 +33,6 @@ public:
 	bool read();
 
 	bool read(const unsigned milliseconds);
-
-	float readResistance();
 
 };
 

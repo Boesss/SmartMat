@@ -118,11 +118,11 @@ int showerLoop() {
 
 // Motor functions
 void openShowerHead() {
-	servo.write(100);
+	servo.write(93 + 22);
 }
 
 void closeShowerHead() {
-	servo.write(90);
+	servo.write(93);
 }
 
 //Debug functions
@@ -137,7 +137,7 @@ void printDebug() {
 	Serial.print("Temperature: ");
 	Serial.print(sensor_t.readTemperature()); // Temperature in celcius
 	Serial.print(", Pressure mat: ");
-	Serial.print(sensor_p.readResistance()); // Pressure mat in bool
+	Serial.print(sensor_p.read()); // Pressure mat in bool
 	Serial.print(", Rotation:  ");
 	Serial.println(servo.read()); // Rotation in degrees
 }
