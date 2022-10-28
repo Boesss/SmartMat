@@ -5,6 +5,8 @@
 #include "PressureSensor.h"
 #include "Timer.h"
 
+#define DEBUG
+
 // IO Pins for the different classes
 constexpr uint8_t PRESPIN = A2;
 constexpr uint8_t TEMPPIN = A1;
@@ -14,7 +16,7 @@ constexpr uint8_t MOTORPIN = 3;
 constexpr int SHUTOFFDURATION = 15000; // In milliseconds
 
 // Constructors for all the classes
-PressureSensor sensor_p(1, PRESPIN, 0.1); // Treshhold 0.1 kOhm, around 5 kg.
+PressureSensor sensor_p(1, PRESPIN, 0.05); 
 TemperatureSensor sensor_t(1, TEMPPIN, 0.2); // Rate of change 0.2 celcius
 Servo servo;
 Timer timout;
@@ -41,12 +43,19 @@ void setup() {
 // ARDUINO LOOP
 void loop() {
 
-	//printTempDebug();
+	#ifdef DEBUG
+	printDebug();
+	#endif
 
-	//printDebug();
+	#ifdef DEBUGTEMP
+	printTempDebug();
+	#endif
 
+	#ifndef DEBUG
+	#ifndef DEBUGTEMP
 	showerLoop();
-
+	#endif
+	#endif
 }
 
 // Main function
@@ -128,7 +137,7 @@ void printDebug() {
 	Serial.print("Temperature: ");
 	Serial.print(sensor_t.readTemperature()); // Temperature in celcius
 	Serial.print(", Pressure mat: ");
-	Serial.print(sensor_p.read()); // Pressure mat in bool
+	Serial.print(sensor_p.readResistance()); // Pressure mat in bool
 	Serial.print(", Rotation:  ");
 	Serial.println(servo.read()); // Rotation in degrees
 }

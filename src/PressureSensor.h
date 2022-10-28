@@ -20,9 +20,7 @@ private:
 
 	float treshhold_resistance = 0;
 
-	static const unsigned _resistance = 10; // In kOhm
-
-	float readResistance();
+	static const unsigned _resistance = 10000; // In Ohm
 
 public:
 	// Constructor for a Pressure sensor
@@ -33,6 +31,8 @@ public:
 	bool read();
 
 	bool read(const unsigned milliseconds);
+
+	float readResistance();
 
 };
 
