@@ -17,7 +17,7 @@ constexpr int SHUTOFFDURATION = 20000; // In milliseconds
 constexpr int SURROUNDTEMPDURATION = 60000; // Measure every 60 seconds
 
 // Constructors for all the classes
-PressureSensor sensor_p(1, PRESPIN, 1); 
+PressureSensor sensor_p(1, PRESPIN, 2); 
 TemperatureSensor sensor_t(1, TEMPPIN, 0.2); // Rate of change 0.2 celcius
 Servo servo;
 Timer timeout;
